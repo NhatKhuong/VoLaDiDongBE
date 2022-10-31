@@ -15,11 +15,13 @@ const storage = new CloudinaryStorage({
     // async code using `req` and `file`
     // ...
     logger.info(`Insert successfully file ${file.filename} cloundynary`);
-    const extension = file.mimetype.split("/")[1];
+    console.log(file.originalname.split("."));
+    const extension = file.originalname.split(".").pop();
     const fileName = `${uuidv4()}`;
     return {
       folder: "volo",
       format: extension,
+      resource_type: "auto",
       public_id: fileName,
     };
   },

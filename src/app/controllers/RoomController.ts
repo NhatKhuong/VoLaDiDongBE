@@ -9,6 +9,14 @@ import SearchRoomHandler from "../handlers/rooms/SearchRoomHandler";
 import { getLocationFromRequest } from "../../util/mutler";
 import RemoveUserFromRoomHannler from "../handlers/rooms/RemoveUserFromRoomHannler";
 
+const GetMessagesHandler_1 = __importDefault(require("../handlers/rooms/GetMessagesHandler"));
+const AddUserIntoRoomHannler_1 = __importDefault(require("../handlers/rooms/AddUserIntoRoomHannler"));
+const SearchRoomHandler_1 = __importDefault(require("../handlers/rooms/SearchRoomHandler"));
+const mutler_1 = require("../../util/mutler");
+const RemoveUserFromRoomHannler_1 = __importDefault(require("../handlers/rooms/RemoveUserFromRoomHannler"));
+const UpdateNameGroupRoomHandler_1 = __importDefault(require("../handlers/rooms/UpdateNameGroupRoomHandler"));
+const UpdateAvatarGroupRoomHandler_1 = __importDefault(require("../handlers/rooms/UpdateAvatarGroupRoomHandler"));
+
 class RoomController {
   // [GET] api/rooms/users/:userId
   async getPrivateRoomByUser(req: Request, res: Response, next: NextFunction) {
@@ -20,17 +28,47 @@ class RoomController {
     res.status(200).json(result);
   }
   // [POST] api/rooms
-  async createGroupRoomByUser(req: Request, res: Response, next: NextFunction) {
-    const avatar = getLocationFromRequest(req);
-    const request = {
-      myId: req.headers.userId as string,
-      userIds: req.body.userIds,
-      name: req.body.name,
-      avatar: avatar,
-    };
-    const result = await CreateGroupRoomHandler.handle(request);
-    res.status(200).json(result);
-  }
+   createGroupRoomByUser(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const avatar = (0, mutler_1.getUrlFromRequest)(req);
+            const request = {
+                myId: req.headers.userId,
+                userIds: req.body.userIds,
+                name: req.body.name,
+                avatar: req.body.avatar,
+                avatar: avatar,
+            };
+            const result = yield CreateGroupRoomHandler_1.default.handle(request);
+            res.status(200).json(result);
+        });
+    }
+
+   // [PATCH] /:roomId/users
+   updateNameRoom(req, res, next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const request = {
+            myId: req.headers.userId,
+            name: req.body.name,
+            roomId: req.params.roomId,
+        };
+        const result = yield UpdateNameGroupRoomHandler_1.default.handle(request);
+        res.status(200).json(result);
+    });
+}
+// [PATCH] /:roomId/avatar
+updateAvatarRoom(req, res, next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const avatar = (0, mutler_1.getUrlFromRequest)(req);
+        const request = {
+            myId: req.headers.userId,
+            roomId: req.params.roomId,
+            avatar: avatar,
+        };
+        const result = yield UpdateAvatarGroupRoomHandler_1.default.handle(request);
+        res.status(200).json(result);
+    });
+}
+
   // [PUT] /:roomId/users/:userId
   async addUserIntoRoom(req: Request, res: Response, next: NextFunction) {
     const request = {

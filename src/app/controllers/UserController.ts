@@ -10,13 +10,25 @@ import GetUserByIdHandler from "../handlers/user/GetUserByIdHandler";
 import LoginHandler from "../handlers/user/LoginHandler";
 import { sendFriendInviteSocket } from "../socket/handlerOutsite";
 
+Object.defineProperty(exports, "__esModule", { value: true });
+const DeleteFriendInviteHandler_1 = __importDefault(require("../handlers/friend/DeleteFriendInviteHandler"));
+const GetFriendsHandler_1 = __importDefault(require("../handlers/friend/GetFriendsHandler"));
+const SendFriendInviteHandler_1 = __importDefault(require("../handlers/friend/SendFriendInviteHandler"));
+const GetMyProfileHandler_1 = __importDefault(require("../handlers/user/GetMyProfileHandler"));
+const GetUserByEmailHandler_1 = __importDefault(require("../handlers/user/GetUserByEmailHandler"));
+const GetUserByIdHandler_1 = __importDefault(require("../handlers/user/GetUserByIdHandler"));
+const LoginHandler_1 = __importDefault(require("../handlers/user/LoginHandler"));
+const handlerOutsite_1 = require("../socket/handlerOutsite");
+
 class UserController {
   // [POST] api/auth/login
-  async login(req: Request, res: Response, next: NextFunction) {
-    const { email, password } = req.body;
-    const result = await LoginHandler.handle({ email, password });
-    res.status(200).json(result);
-  }
+  login(req, res, next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const { email, password } = req.body;
+        const result = yield LoginHandler_1.default.handle({ email, password });
+        res.status(200).json(result);
+    });
+}
   // [GET] api/users/profile
   async getMyProfile(req: Request, res: Response, next: NextFunction) {
     const request: IGetMyProfileRequest = {
@@ -25,6 +37,19 @@ class UserController {
     const result = await GetMyProfileHandler.handle(request);
     res.status(200).json(result);
   }
+
+   // [DELETE] api/users/invites
+   deleteFriendInvite(req, res, next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const request = {
+            myId: req.headers.userId,
+            userId: req.body.userId,
+        };
+        const result = yield DeleteFriendInviteHandler_1.default.handle(request);
+        res.status(200).json(result);
+    });
+}
+
   // [PUT] api/users/profile
   async updateMyProfile(req: Request, res: Response, next: NextFunction) {
     const request: IGetMyProfileRequest = {
